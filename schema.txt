@@ -1,0 +1,62 @@
+category : {
+    name: string
+}
+
+image : {
+    imageUrl : string
+}
+
+item : {
+    title : string,
+    price : number,
+    country : string,
+    city : string,
+    isPopular : boolean
+    decription : string,
+    imageId : [{_id : ObjectId}],
+    featureId : [{_id : ObjectId}],
+    activityId : [{_id : ObjectId}],
+}
+
+feature : {
+    name : string,
+    qty : bumber,
+    imageUrl : string
+}
+
+activity : {
+    name : string,
+    type : string,
+    imageUrl : string,
+    isPopular : boolean
+}
+
+booking : {
+    bookingStartDate : date,
+    bookingEndDate : date,
+    ItemId : [{
+        _id : ObjectId,
+        price : number,
+        night : number,
+    }]
+    memberId : [{ _id : ObjectId }],
+    bankId : [{ _id : ObjectId }],
+    proofPayment : string,
+    bankFrom : string,
+    acountHolder : string,
+    imageUrl : string,
+    status : string
+}
+
+member : {
+    firstName : string,
+    lasName : string,
+    email : string,
+    phoneNumber : string,
+}
+
+bank : {
+    nameBank : string,
+    nomorRekening : string,
+    name : string
+}
