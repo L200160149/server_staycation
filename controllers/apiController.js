@@ -2,6 +2,9 @@ const Item = require('../models/Item');
 const Treasure = require('../models/Activity');
 const Traveller = require('../models/Booking');
 const Category = require('../models/Category');
+const Bank = require('../models/Bank');
+const Member = require('../models/Member');
+const Booking = require('../models/Booking');
 
 module.exports = {
     landingPage: async (req, res) => {
@@ -44,6 +47,16 @@ module.exports = {
                 }
             }
 
+            const testimonial = {
+                _id: "asd1293uasdads1",
+                imageurl: "images/testimonial2.jpg",
+                name: "Happy Family",
+                rate: 4.55,
+                content: "What a grat trip with my family and i should try again next time soon ...",
+                familyName: "Zen",
+                familyOccupation: "Product Designer"
+            }
+
             res.status(200).json({ 
                 hero: {
                     travelers: traveller.length,
@@ -51,11 +64,123 @@ module.exports = {
                     cities: city.length,
                 },
                 mostPicked,
-                category
+                category,
+                testimonial
             })
         } catch (error) {
             console.log(error);
             res.status(500).json({message: "Internal Server Error"})
         }
+    },
+
+    detailPage: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const item = await Item.findOne({_id: id})
+                .populate({path: 'featureId', select: '_id name qty imageUrl'})
+                .populate({path: 'activityId', select: '_id name type imageUrl'})
+                .populate({path: 'imageId', select: '_id imageUrl'})
+
+            const bank = await Bank.find();
+
+            const testimonial = {
+                _id: "asd1293uasdads1",
+                imageurl: "images/testimonial1.jpg",
+                name: "Happy Family",
+                rate: 4.55,
+                content: "What a grat trip with my family and i should try again next time soon ...",
+                familyName: "Zen",
+                familyOccupation: "Product Designer"
+            }
+
+            res.status(200).json({
+                ...item._doc,
+                bank,
+                testimonial
+            })
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({message: "Internal Server Error"})
+        }
+    },
+
+    bookingPage: async (req, res) => {
+        const {
+            idItem,
+            duration,
+            price,
+            bookingStartDate,
+            bookingEndDate,
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            accountHolder,
+            bankFrom
+        } = req.body;
+
+        if(!req.file) {
+            return res.status(404).json({message: "Image not found"});
+        }
+
+        if (idItem === undefined ||
+            duration === undefined ||
+            // price === undefined ||
+            bookingStartDate === undefined ||
+            bookingEndDate === undefined ||
+            firstName === undefined ||
+            lastName === undefined ||
+            email === undefined ||
+            phoneNumber === undefined ||
+            accountHolder === undefined ||
+            bankFrom === undefined ) {
+                return res.status(404).json({message:"Lengkapi semua field"});
+            }
+
+        const item = await Item.findOne({_id: idItem});
+
+        if(!item) {
+            return res.status(404).json({message: "Item not found"});
+        }
+
+        item.sumBooking += 1;
+
+        await item.save();
+
+        let total = item.price * duration;
+        let tax = total * 0.10;
+
+        const invoice = Math.floor(1000000 + Math.random() * 9000000);
+
+        const member = await Member.create({
+            firstName,
+            lastName,
+            email,
+            phoneNumber
+        })
+
+        const newBooking = {
+            invoice,
+            bookingStartDate,
+            bookingEndDate,
+            total : total += tax,
+            itemId: {
+                _id: item.id,
+                title: item.title,
+                price: item.price,
+                duration: duration
+            },
+
+            memberId: member.id,
+            payments: {
+                proofPayment: `images/${req.file.filename}`,
+                bankFrom: bankFrom,
+                accountHolder: accountHolder
+            }
+        }
+
+        const booking = await Booking.create(newBooking);
+
+        res.status(201).json({message: "Success Booking", booking});
     }
 }
