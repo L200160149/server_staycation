@@ -27,7 +27,7 @@
                         <td><%= bank[i].nomorRekening %> </td>
                         <td><%= bank[i].name %> </td>
                         <td>
-                            <img src="http://localhost:3000/<%= bank[i].imageUrl %>" alt="image" height="70" width="70">
+                            <img src="https://mern-staycations.herokuapp.com/<%= bank[i].imageUrl %>" alt="image" height="70" width="70">
                         </td>
                         <td>
                             <form action="/admin/bank/<%= bank[i].id %>?_method=DELETE" method="POST">
