@@ -9,7 +9,7 @@ const session = require("express-session");
 const flash = require('connect-flash');
 // import mongoose
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://0.0.0.0:27017/db_staycation");
+mongoose.connect("mongodb+srv://l200160149:l200160149@cluster0.m7nma.mongodb.net/db_staycation?retryWrites=true&w=majority");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
