@@ -51,12 +51,12 @@ module.exports = {
       
       req.session.user = {
         id: user.id,
-        username: user.name
+        username: user.username
       }
 
       res.redirect('/admin/dashboard');
     } catch (error) {
-      res.redirect('/admin/signin');
+
     }
   },
   actionLogout: async (req, res) => {
